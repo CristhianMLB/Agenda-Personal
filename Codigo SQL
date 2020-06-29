@@ -1,0 +1,44 @@
+CREATE TABLE IF NOT EXISTS `mydb`.`Calendario` (
+  `idCalendario` INT NOT NULL AUTO_INCREMENT,
+  `Fecha` DATE NOT NULL,
+  `Hora` TIME NULL,
+  `Notas` TINYTEXT NULL,
+  `Estado` ENUM('Pendiente', 'Completado', 'Anulado', 'Retrasado') NOT NULL,
+  PRIMARY KEY (`idCalendario`))
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Contactos` (
+  `DNI` VARCHAR(25) NOT NULL,
+  `Nombre` VARCHAR(45) NOT NULL,
+  `Apellidos` VARCHAR(45) NULL,
+  `Teléfono` INT NOT NULL,
+  `Correo` VARCHAR(50) NULL,
+  `Grupo` VARCHAR(45) NOT NULL,
+  `Fecha de Nacimiento` DATE NULL,
+  PRIMARY KEY (`DNI`),
+  INDEX `Grupo_idx` (`Grupo` ASC) VISIBLE,
+  CONSTRAINT `Grupo`
+    FOREIGN KEY (`Grupo`)
+    REFERENCES `mydb`.`Grupo` (`Nombre`)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE)
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Grupo` (
+  `Nombre` VARCHAR(45) NOT NULL,
+  `Descripción` TINYTEXT NULL,
+  PRIMARY KEY (`Nombre`))
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Invitados_Cita` (
+  `idCalendario` INT NOT NULL AUTO_INCREMENT,
+  `DNI` VARCHAR(25) NOT NULL,
+  PRIMARY KEY (`idCalendario`, `DNI`),
+  INDEX `DNI_idx` (`DNI` ASC) VISIBLE,
+  CONSTRAINT `idCalendario`
+    FOREIGN KEY (`idCalendario`)
+    REFERENCES `mydb`.`Calendario` (`idCalendario`)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE,
+  CONSTRAINT `DNI`
+    FOREIGN KEY (`DNI`)
+    REFERENCES `mydb`.`Contactos` (`DNI`)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE)            
